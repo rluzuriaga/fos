@@ -1,9 +1,13 @@
 name: Testing Release
 
-on: [workflow_dispatch]
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
-  run-script:
+
+  build:
     runs-on: ubuntu-22.04
 
     steps:
@@ -16,16 +20,42 @@ jobs:
     - name: Build x64 kernel
       run: ./build.sh -nka x64
       shell: bash
-
-    - name: Create release
+    
+    - name: Save distribution files
+      uses: actions/upload-artifact@v2
+      with:
+        name: distribution-files
+        path: dist
+        retention-days: 1
+  
+  
+  release:
+    needs: build
+    
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - name: Download distribution files
+      uses: actions/download-artifact@v2
+    
+    - name: Create Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
+        body: |
+          ${{ github.event.head_commit.message }}
         draft: false
         prerelease: false
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        assets: |
-          fos/dist/bzImage
+    
+    - name: Upload x64 kernel
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./distribution-files/bzImage
+        asset_name: bzImage

@@ -1,0 +1,33 @@
+name: Testing Release
+
+on:
+  create:
+    types: [tag]
+
+jobs:
+  run-script:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+
+    - name: Build x64 kernel
+      run: ./build.sh -nka x64
+      shell: bash
+
+    - name: Create release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        assets: |
+          fos/dist/bzImage

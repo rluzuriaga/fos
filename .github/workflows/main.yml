@@ -11,6 +11,10 @@ on:
         type: string
         description: 'Release Description'
         required: false
+      tag_name:
+        type: string
+        description: 'Tag Name'
+        required: true
         
   
 jobs:
@@ -51,4 +55,5 @@ jobs:
       with:
         name: ${{ github.event.inputs.release_name }}
         body: ${{ github.event.inputs.relese_description }}
+        tag_name: ${{ github.event.inputs.release_name }}
         files: ./distribution-filese/bzImage

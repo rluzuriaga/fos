@@ -56,4 +56,4 @@ jobs:
         name: ${{ github.event.inputs.release_name }}
         body: ${{ github.event.inputs.relese_description }}
         tag_name: ${{ github.event.inputs.release_name }}
-        files: ./distribution-filese/bzImage
+        files: ./distribution-files/bzImage

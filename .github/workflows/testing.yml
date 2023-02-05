@@ -1,0 +1,73 @@
+name: Test Creating Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_name:
+        type: string
+        description: 'Release Name'
+        required: true
+      relese_description:
+        type: string
+        description: 'Release Description'
+        required: false
+      tag_name:
+        type: string
+        description: 'Tag Name'
+        required: true
+        
+  
+jobs:
+
+  build_kernel_arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+
+    - name: Build arm64 kernel
+      run: ./build.sh -nka arm64
+      shell: bash
+    
+    - name: Run sha256 checksum
+      run: |
+        cd dist
+        sha256sum -c ./*.sha256; [[ $? -ne 0 ]] && echo "Checkum check failed on ${i}." && exit 1
+      shell: bash
+    
+    - name: Save distribution files
+      uses: actions/upload-artifact@v3
+      with:
+        name: distribution-files
+        path: dist
+        retention-days: 1
+  
+  release:
+    needs: build_kernel_arm64
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+    - name: Download distribution files
+      uses: actions/download-artifact@v3
+    
+    - name: Run sha256 checksum
+      run: |
+        cd distribution-files
+        sha256sum -c ./*.sha256; [[ $? -ne 0 ]] && echo "Checkum check failed on ${i}." && exit 1
+      shell: bash
+      
+    - name: Create release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: ${{ github.event.inputs.release_name }}
+        body: ${{ github.event.inputs.relese_description }}
+        tag_name: ${{ github.event.inputs.tag_name }}
+        files: |
+          ./distribution-files/arm_Image
+          ./distribution-files/arm_Image.sha256

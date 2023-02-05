@@ -46,8 +46,9 @@ jobs:
     - name: Download distribution files
       uses: actions/download-artifact@v2
       
-    - name: ${{ github.event.inputs.release_name }}
+    - name: Create release
       uses: softprops/action-gh-release@v1
-      body: ${{ github.event.inputs.relese_description }}
       with:
+        name: ${{ github.event.inputs.release_name }}
+        body: ${{ github.event.inputs.relese_description }}
         files: ./distribution-filese/bzImage

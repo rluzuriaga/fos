@@ -36,7 +36,8 @@ jobs:
     - name: Run sha256 checksum
       run: |
         cd dist
-        sha256sum -c ./*.sha256; [[ $? -ne 0 ]] && echo "Checkum check failed on ${i}." && exit 1
+        sha256sum -c ./*.sha256
+        if [[ $? -ne 0 ]]; then "Checkum check failed."; exit 1; fi
       shell: bash
     
     - name: Save distribution files
@@ -52,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    
+
     - name: Download distribution files
       uses: actions/download-artifact@v3
     

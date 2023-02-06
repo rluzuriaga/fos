@@ -64,5 +64,5 @@ jobs:
           body: |
             Linux kernel ${{ github.event.inputs.linux_kernel_version }}
             Buildroot ${{ github.event.inputs.buildroot_version }}
-            ${{ github.event.inputs.relese_description }}
+            ${{ github.event.inputs.extra_description }}
           tag_name: ${{ github.event.inputs.tag_name }}

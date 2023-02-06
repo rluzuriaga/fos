@@ -61,5 +61,8 @@ jobs:
         with:
           name: ${{ github.event.inputs.release_name }}
           prerelease: ${{ github.event.inputs.is_prerelease }}
-          body: Linux kernel ${{ github.event.inputs.linux_kernel_version }}<br />Buildroot ${{ github.event.inputs.buildroot_version }}<br />${{ github.event.inputs.relese_description }}
+          body: |
+            Linux kernel ${{ github.event.inputs.linux_kernel_version }}
+            Buildroot ${{ github.event.inputs.buildroot_version }}
+            ${{ github.event.inputs.relese_description }}
           tag_name: ${{ github.event.inputs.tag_name }}

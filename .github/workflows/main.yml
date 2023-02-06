@@ -136,7 +136,14 @@ jobs:
         with:
           name: distribution-files
           path: dist
-          retention-days: 1
+          retention-days: 2
+
+      - name: Save log file
+        uses: actions/upload-artifact@v3
+        with:
+          name: Buildroot-logs
+          path: fssourcearm64/buildrootarm64.log
+          retention-days: 30
 
   build_initrd_x86:
     runs-on: ubuntu-latest
@@ -162,7 +169,14 @@ jobs:
         with:
           name: distribution-files
           path: dist
-          retention-days: 1
+          retention-days: 2
+
+      - name: Save log file
+        uses: actions/upload-artifact@v3
+        with:
+          name: Buildroot-logs
+          path: fssourcex86/buildrootx86.log
+          retention-days: 30
 
   build_initrd_x64:
     runs-on: ubuntu-latest
@@ -188,7 +202,14 @@ jobs:
         with:
           name: distribution-files
           path: dist
-          retention-days: 1
+          retention-days: 2
+
+      - name: Save log file
+        uses: actions/upload-artifact@v3
+        with:
+          name: Buildroot-logs
+          path: fssourcex64/buildrootx64.log
+          retention-days: 30
 
   release:
     needs:
@@ -217,7 +238,11 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ github.event.inputs.release_name }}
-          body: ${{ github.event.inputs.relese_description }}
+          prerelease: ${{ github.event.inputs.is_prerelease }}
+          body: |
+            Linux kernel ${{ github.event.inputs.linux_kernel_version }}
+            Buildroot ${{ github.event.inputs.buildroot_version }}
+            ${{ github.event.inputs.extra_description }}
           tag_name: ${{ github.event.inputs.tag_name }}
           files: |
             arm_Image

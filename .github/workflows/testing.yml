@@ -47,11 +47,8 @@ jobs:
     
     - name: Check sha256
       run: |
-        sha256sum -c test.sha256
-        if [[ $? -ne 0 ]]; then
-          echo "Checksum failed."
-          exit 1
-        fi 
+        sha256sum -c ./*.sha256
+        [[ $? -ne 0 ]] && exit 1
       shell: bash
     
     - name: Make failure
@@ -63,9 +60,6 @@ jobs:
     
     - name: Check sha256 (should fail)
       run: |
-        sha256sum -c test.sha256
-        if [[ $? -ne 0 ]]; then
-          echo "Checksum failed."
-          exit 1
-        fi 
+        sha256sum -c ./*.sha256
+        [[ $? -ne 0 ]] && exit 1
       shell: bash

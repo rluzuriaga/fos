@@ -3,63 +3,29 @@ name: Test Creating Release
 on:
   workflow_dispatch:
 
-    inputs:
-      release_name:
-        type: string
-        description: 'Release Name'
-        required: true
-      tag_name:
-        type: string
-        description: 'Tag Name'
-        required: true
-      is_prerelease:
-        type: boolean
-        default: false
-        description: 'Pre-release?'
-        required: true
-      linux_kernel_version:
-        type: string
-        description: 'Linux kernel version'
-        required: true
-      buildroot_version:
-        type: string
-        description: 'Buildroot version'
-        required: true
-      extra_description:
-        type: string
-        description: "Description"
-        required: false
-
-
 jobs:
-
   testing_sha256:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Create text file
-      run: echo "testing" > test.txt
-      shell: bash
-    
-    - name: Create sha256 from text file
-      run: sha256sum test.txt > test.sha256
-      shell: bash
-    
-    - name: Check sha256
-      run: |
-        sha256sum -c ./*.sha256
-        if [[ $? -ne 0 ]]; then exit 1; fi
-      shell: bash
-    
-    - name: Make failure
-      run: |
-        rm -f test.sha256
-        SHA_CHECKSUM=$(sha256sum test.txt)
-        echo ${SHA_CHECKSUM//1/2} > test.sha256
-      shell: bash
-    
-    - name: Check sha256 (should fail)
-      run: |
-        sha256sum -c ./*.sha256
-        if [[ $? -ne 0 ]]; then exit 1; fi
-      shell: bash
+      - name: Create text file
+        run: echo "testing" > test.txt
+        shell: bash
+
+      - name: Create sha256 from text file
+        run: sha256sum test.txt > test.sha256
+        shell: bash
+
+      - name: Create second text file
+        run: echo "testing 2" > another_test.txt
+        shell: bash
+
+      - name: Create second sha256 from text file
+        run: sha256sum another_test.txt > another_test.sha256
+        shell: bash
+
+      - name: Check sha256
+        run: |
+          sha256sum -c ./*.sha256
+          if [[ $? -ne 0 ]]; then exit 1; fi
+        shell: bash

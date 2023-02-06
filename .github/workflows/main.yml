@@ -120,7 +120,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev zip -y
 
       - name: Build arm64 initrd
         run: ./build.sh -nfa arm64
@@ -138,11 +138,14 @@ jobs:
           path: dist
           retention-days: 2
 
+      - name: Compress log
+        run: zip fssourcearm64/buildrootarm64.log.zip fssourcearm64/buildrootarm64.log
+
       - name: Save log file
         uses: actions/upload-artifact@v3
         with:
           name: Buildroot-logs
-          path: fssourcearm64/buildrootarm64.log
+          path: fssourcearm64/buildrootarm64.log.zip
           retention-days: 30
 
   build_initrd_x86:
@@ -153,7 +156,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev zip -y
 
       - name: Build x86 initrd
         run: ./build.sh -nfa x86
@@ -171,11 +174,14 @@ jobs:
           path: dist
           retention-days: 2
 
+      - name: Compress log
+        run: zip fssourcex86/buildrootx86.log.zip fssourcex86/buildrootx86.log
+
       - name: Save log file
         uses: actions/upload-artifact@v3
         with:
           name: Buildroot-logs
-          path: fssourcex86/buildrootx86.log
+          path: fssourcex86/buildrootx86.log.zip
           retention-days: 30
 
   build_initrd_x64:
@@ -186,7 +192,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev zip -y
 
       - name: Build x64 initrd
         run: ./build.sh -nfa x64
@@ -204,11 +210,14 @@ jobs:
           path: dist
           retention-days: 2
 
+      - name: Compress log
+        run: zip fssourcex64/buildrootx64.log.zip fssourcex64/buildrootx64.log
+
       - name: Save log file
         uses: actions/upload-artifact@v3
         with:
           name: Buildroot-logs
-          path: fssourcex64/buildrootx64.log
+          path: fssourcex64/buildrootx64.log.zip
           retention-days: 30
 
   release:
@@ -227,12 +236,6 @@ jobs:
     steps:
       - name: Download distribution files
         uses: actions/download-artifact@v3
-
-      - name: Install zip dependency
-        run: sudo apt update && sudo apt install zip -y
-
-      - name: Zip buildroot logs
-        run: zip -r Buildroot-logs.zip Buildroot-logs
 
       - name: Run sha256 checksum on all files
         run: |

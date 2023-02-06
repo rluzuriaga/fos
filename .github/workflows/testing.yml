@@ -2,6 +2,32 @@ name: Test Creating Release
 
 on:
   workflow_dispatch:
+    inputs:
+      release_name:
+        type: string
+        description: "Release Name"
+        required: true
+      tag_name:
+        type: string
+        description: "Tag Name"
+        required: true
+      is_prerelease:
+        type: boolean
+        default: false
+        description: "Pre-release?"
+        required: true
+      linux_kernel_version:
+        type: string
+        description: "Linux kernel version"
+        required: true
+      buildroot_version:
+        type: string
+        description: "Buildroot version"
+        required: true
+      extra_description:
+        type: string
+        description: "Description"
+        required: false
 
 jobs:
   testing_sha256:
@@ -24,14 +50,16 @@ jobs:
         run: sha256sum another_test.txt > another_test.sha256
         shell: bash
 
-      - name: Make failure
-        run: |
-          rm -f test.sha256
-          SHA_CHECKSUM=$(sha256sum test.txt)
-          echo ${SHA_CHECKSUM//1/2} > test.sha256
-
       - name: Check sha256
         run: |
           sha256sum -c ./*.sha256
           if [[ $? -ne 0 ]]; then exit 1; fi
         shell: bash
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.event.inputs.release_name }}
+          prerelease: ${{ github.event.inputs.is_prerelease }}
+          body: Linux kernel ${{ github.event.inputs.linux_kernel_version }}<br />Buildroot ${{ github.event.inputs.buildroot_version }}<br />${{ github.event.inputs.relese_description }}
+          tag_name: ${{ github.event.inputs.tag_name }}

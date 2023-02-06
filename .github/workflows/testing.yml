@@ -55,7 +55,10 @@ jobs:
       shell: bash
     
     - name: Make failure
-      run: echo "aa" >> test.sha256
+      run: |
+        rm -f test.sha256
+        SHA_CHECKSUM=$(sha256sum test.txt)
+        echo ${SHA_CHECKSUM//1/2} > test.sha256
       shell: bash
     
     - name: Check sha256 (should fail)

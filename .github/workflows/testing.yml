@@ -24,6 +24,12 @@ jobs:
         run: sha256sum another_test.txt > another_test.sha256
         shell: bash
 
+      - name: Make failure
+        run: |
+          rm -f test.sha256
+          SHA_CHECKSUM=$(sha256sum test.txt)
+          echo ${SHA_CHECKSUM//1/2} > test.sha256
+
       - name: Check sha256
         run: |
           sha256sum -c ./*.sha256

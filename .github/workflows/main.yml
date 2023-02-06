@@ -228,6 +228,12 @@ jobs:
       - name: Download distribution files
         uses: actions/download-artifact@v3
 
+      - name: Install zip dependency
+        run: sudo apt update && sudo apt install zip -y
+
+      - name: Zip buildroot logs
+        run: zip -r Buildroot-logs.zip Buildroot-logs
+
       - name: Run sha256 checksum on all files
         run: |
           cd distribution-files

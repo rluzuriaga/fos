@@ -40,6 +40,14 @@ jobs:
         if [[ $? -ne 0 ]]; then "Checkum check failed."; exit 1; fi
       shell: bash
     
+    - name: Run sha256 checksum (fail on purpose)
+      run: |
+        cd dist
+        echo "a" >> arm_Image.sha256
+        sha256sum -c ./*.sha256
+        if [[ $? -ne 0 ]]; then "Checkum check failed. Not exiting to test."; fi
+      shell: bash
+    
     - name: Save distribution files
       uses: actions/upload-artifact@v3
       with:
@@ -60,7 +68,16 @@ jobs:
     - name: Run sha256 checksum
       run: |
         cd distribution-files
-        sha256sum -c ./*.sha256; [[ $? -ne 0 ]] && echo "Checkum check failed on ${i}." && exit 1
+        sha256sum -c ./*.sha256
+        if [[ $? -ne 0 ]]; then "Checkum check failed."; exit 1; fi
+      shell: bash
+    
+    - name: Run sha256 checksum (fail on purpose)
+      run: |
+        cd distribution-files
+        echo "a" >> arm_Image.sha256
+        sha256sum -c ./*.sha256
+        if [[ $? -ne 0 ]]; then "Checkum check failed."; exit 1; fi
       shell: bash
       
     - name: Create release

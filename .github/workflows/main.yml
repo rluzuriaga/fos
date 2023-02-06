@@ -245,15 +245,15 @@ jobs:
             ${{ github.event.inputs.extra_description }}
           tag_name: ${{ github.event.inputs.tag_name }}
           files: |
-            arm_Image
-            arm_Image.sha256
-            arm_init.cpio.gz
-            arm_init.cpio.gz.sha256
-            bzImage
-            bzImage.sha256
-            bzImage32
-            bzImage32.sha256
-            init.xz
-            init.xz.sha256
-            init_32.xz
-            init_32.xz.sha256
+            distribution-files/arm_Image
+            distribution-files/arm_Image.sha256
+            distribution-files/arm_init.cpio.gz
+            distribution-files/arm_init.cpio.gz.sha256
+            distribution-files/bzImage
+            distribution-files/bzImage.sha256
+            distribution-files/bzImage32
+            distribution-files/bzImage32.sha256
+            distribution-files/init.xz
+            distribution-files/init.xz.sha256
+            distribution-files/init_32.xz
+            distribution-files/init_32.xz.sha256

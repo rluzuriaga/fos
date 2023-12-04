@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ -z $KERNEL_VERSION ]] && KERNEL_VERSION='6.1.63'
+[[ -z $KERNEL_VERSION ]] && KERNEL_VERSION='6.6.3'
 [[ -z $BUILDROOT_VERSION ]] && BUILDROOT_VERSION='2023.02.7'
 
 Usage() {
@@ -120,13 +120,13 @@ rhelDeps="epel-release tar xz git meld gcc gcc-c++ kernel-devel make bc rsync nc
 [[ -z $buildPath ]] && buildPath=$(dirname $(readlink -f $0))
 [[ -z $confirm ]] && confirm="y"
 echo "Checking packages needed for building"
-if grep -iqE "Debian|Ubuntu" /proc/version ; then
+if grep -iqE "Debian|Ubuntu" /etc/os-release ; then
     os="deb"
     eabi="eabi"
     pkgmgr() {
         dpkg -l
     }
-elif grep -iqE "Red Hat|Redhat" /proc/version ; then
+elif grep -iqE "Red Hat|Redhat" /etc/os-release ; then
     os="rhel"
     eabi=""
     pkgmgr() {

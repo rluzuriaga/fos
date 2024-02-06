@@ -3,6 +3,11 @@ name: Create Release
 on:
   workflow_dispatch:
     inputs:
+      is_pre_release:
+        type: boolean
+        default: false
+        description: "Is this pre-release?"
+        required: false
       is_official_release:
         type: boolean
         default: false
@@ -279,6 +284,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ env.RELEASE_NAME }}
+          prerelease: ${{ github.event.inputs.is_prerelease }}
           body: |
             Linux kernel ${{ env.LINUX_KERNEL_VER }}
             Buildroot ${{ env.BUILDROOT_VER }}

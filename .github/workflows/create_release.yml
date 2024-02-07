@@ -3,7 +3,7 @@ name: Create Release
 on:
   workflow_dispatch:
     inputs:
-      is_pre_release:
+      is_prerelease:
         type: boolean
         default: false
         description: "Is this pre-release?"
@@ -40,33 +40,6 @@ jobs:
             exit 1
           fi
 
-  build_kernel_arm64:
-    needs: input_checks
-
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
-
-      - name: Build arm64 kernel
-        run: ./build.sh -nka arm64
-
-      - name: Run sha256 checksum
-        run: |
-          cd dist
-          sha256sum -c ./*.sha256
-          if [[ $? -ne 0 ]]; then exit 1; fi
-
-      - name: Save distribution files
-        uses: actions/upload-artifact@v3
-        with:
-          name: distribution-files
-          path: dist
-          retention-days: 1
 
   build_kernel_x86:
     needs: input_checks
@@ -94,150 +67,14 @@ jobs:
         with:
           name: distribution-files
           path: dist
-          retention-days: 1
+          retention-days: 1 
 
-  build_kernel_x64:
-    needs: input_checks
-
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
-
-      - name: Build x64 kernel
-        run: ./build.sh -nka x64
-
-      - name: Run sha256 checksum
-        run: |
-          cd dist
-          sha256sum -c ./*.sha256
-          if [[ $? -ne 0 ]]; then exit 1; fi
-
-      - name: Save distribution files
-        uses: actions/upload-artifact@v3
-        with:
-          name: distribution-files
-          path: dist
-          retention-days: 1
-
-  build_initrd_arm64:
-    needs: input_checks
-
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
-
-      - name: Build arm64 initrd
-        run: ./build.sh -nfa arm64
-
-      - name: Run sha256 checksum
-        run: |
-          cd dist
-          sha256sum -c ./*.sha256
-          if [[ $? -ne 0 ]]; then exit 1; fi
-
-      - name: Save distribution files
-        uses: actions/upload-artifact@v3
-        with:
-          name: distribution-files
-          path: dist
-          retention-days: 1
-
-      - name: Save log file
-        uses: actions/upload-artifact@v3
-        with:
-          name: Buildroot-logs
-          path: fssourcearm64/buildrootarm64.log
-          retention-days: 30
-
-  build_initrd_x86:
-    needs: input_checks
-
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
-
-      - name: Build x86 initrd
-        run: ./build.sh -nfa x86
-
-      - name: Run sha256 checksum
-        run: |
-          cd dist
-          sha256sum -c ./*.sha256
-          if [[ $? -ne 0 ]]; then exit 1; fi
-
-      - name: Save distribution files
-        uses: actions/upload-artifact@v3
-        with:
-          name: distribution-files
-          path: dist
-          retention-days: 1
-
-      - name: Save log file
-        uses: actions/upload-artifact@v3
-        with:
-          name: Buildroot-logs
-          path: fssourcex86/buildrootx86.log
-          retention-days: 30
-
-  build_initrd_x64:
-    needs: input_checks
-
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
-
-      - name: Build x64 initrd
-        run: ./build.sh -nfa x64
-
-      - name: Run sha256 checksum
-        run: |
-          cd dist
-          sha256sum -c ./*.sha256
-          if [[ $? -ne 0 ]]; then exit 1; fi
-
-      - name: Save distribution files
-        uses: actions/upload-artifact@v3
-        with:
-          name: distribution-files
-          path: dist
-          retention-days: 1
-
-      - name: Save log file
-        uses: actions/upload-artifact@v3
-        with:
-          name: Buildroot-logs
-          path: fssourcex64/buildrootx64.log
-          retention-days: 30
+  
 
   release:
     needs:
       [
-        build_kernel_arm64,
-        build_kernel_x86,
-        build_kernel_x64,
-        build_initrd_arm64,
-        build_initrd_x86,
-        build_initrd_x64,
+        build_kernel_x86
       ]
 
     runs-on: ubuntu-22.04
@@ -251,7 +88,12 @@ jobs:
 
       - name: Set release name variable
         run: |
-          echo "RELEASE_NAME=Latest from $(date '+%Y-%m-%d')" >> $GITHUB_ENV
+          is_prerelease="${{ inputs.is_prerelease }}"
+          if [ $is_prerelease ]; then 
+            echo "RELEASE_NAME=EXPERIMENTAL release from $(date '+%Y-%m-%d')" >> $GITHUB_ENV
+          else
+            echo "RELEASE_NAME=Latest from $(date '+%Y-%m-%d')" >> $GITHUB_ENV
+          fi
           
       - name: Set tag name variable
         run: |
@@ -284,21 +126,12 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ env.RELEASE_NAME }}
-          prerelease: ${{ github.event.inputs.is_prerelease }}
+          prerelease: ${{ inputs.is_prerelease }}
           body: |
             Linux kernel ${{ env.LINUX_KERNEL_VER }}
             Buildroot ${{ env.BUILDROOT_VER }}
           tag_name: ${{ env.TAG_NAME }}
           files: |
-            distribution-files/arm_Image
-            distribution-files/arm_Image.sha256
-            distribution-files/arm_init.cpio.gz
-            distribution-files/arm_init.cpio.gz.sha256
-            distribution-files/bzImage
-            distribution-files/bzImage.sha256
             distribution-files/bzImage32
             distribution-files/bzImage32.sha256
-            distribution-files/init.xz
-            distribution-files/init.xz.sha256
-            distribution-files/init_32.xz
-            distribution-files/init_32.xz.sha256
+            

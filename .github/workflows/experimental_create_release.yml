@@ -73,7 +73,7 @@ jobs:
           if [[ $? -ne 0 ]]; then exit 1; fi
 
       - name: Save distribution files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: distribution-files
           path: dist
@@ -102,7 +102,7 @@ jobs:
           if [[ $? -ne 0 ]]; then exit 1; fi
 
       - name: Save distribution files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: distribution-files
           path: dist
@@ -131,7 +131,7 @@ jobs:
           if [[ $? -ne 0 ]]; then exit 1; fi
 
       - name: Save distribution files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: distribution-files
           path: dist
@@ -160,14 +160,14 @@ jobs:
           if [[ $? -ne 0 ]]; then exit 1; fi
 
       - name: Save distribution files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: distribution-files
           path: dist
           retention-days: 1
 
       - name: Save log file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Buildroot-logs
           path: fssourcearm64/buildrootarm64.log
@@ -196,14 +196,14 @@ jobs:
           if [[ $? -ne 0 ]]; then exit 1; fi
 
       - name: Save distribution files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: distribution-files
           path: dist
           retention-days: 1
 
       - name: Save log file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Buildroot-logs
           path: fssourcex86/buildrootx86.log
@@ -232,14 +232,14 @@ jobs:
           if [[ $? -ne 0 ]]; then exit 1; fi
 
       - name: Save distribution files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: distribution-files
           path: dist
           retention-days: 1
 
       - name: Save log file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Buildroot-logs
           path: fssourcex64/buildrootx64.log
@@ -255,6 +255,11 @@ jobs:
         build_initrd_x86,
         build_initrd_x64,
       ]
+
+    if: |
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
 
     runs-on: ubuntu-22.04
 

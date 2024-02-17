@@ -40,18 +40,18 @@ jobs:
       - name: Make at least one workflow input is selected
         run: |
 
-          # init_arm64="${{ inputs.init_arm64 }}"
-          # init_x64="${{ inputs.init_x64 }}"
-          # init_x86="${{ inputs.init_x86 }}"
-          # kernel_arm64="${{ inputs.kernel_arm64 }}"
-          # kernel_x64="${{ inputs.kernel_x64 }}"
-          # kernel_x86="${{ inputs.kernel_x86 }}"
+          init_arm64="${{ inputs.init_arm64 }}"
+          init_x64="${{ inputs.init_x64 }}"
+          init_x86="${{ inputs.init_x86 }}"
+          kernel_arm64="${{ inputs.kernel_arm64 }}"
+          kernel_x64="${{ inputs.kernel_x64 }}"
+          kernel_x86="${{ inputs.kernel_x86 }}"
 
-          # if [ $init_arm64 == "" && $init_x64 == "" && $init_x86 == "" && $kernel_arm64 == "" && $kernel_x64 == "" && $kernel_x86 == "" ]; then
-          #   echo "No kernel or init selected."
-          # fi
+          if [ $init_arm64 == "" && $init_x64 == "" && $init_x86 == "" && $kernel_arm64 == "" && $kernel_x64 == "" && $kernel_x86 == "" ]; then
+            echo "No kernel or init selected."
+          fi
 
-          if !${{ inputs.init_arm64 }} && !${{ inputs.init_x64 }} && !${{ inputs.init_x86 }} && !${{ inputs.kernel_arm64 }} && !${{ inputs.kernel_x64}} && !${{ inputs.kernel_x86 }}; then
+          if [[ "${{ inputs.init_arm64 }}" == "false" && "${{ inputs.init_x64 }}" == "false" && "${{ inputs.init_x86 }}" == "false" && "${{ inputs.kernel_arm64 }}" == "false" && "${{ inputs.kernel_x64}}" == "false" && "${{ inputs.kernel_x86 }}" == "false" ]]; then
             echo "No kernel or init selected."
             exit 1
           fi

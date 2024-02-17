@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Make at least one workflow input is selected
         run: |
-          if [ ${{ inputs.init_arm64 }} == "false" && ${{ inputs.init_x64 }} == "false" && ${{ inputs.init_x86 }} == "false" && ${{ inputs.kernel_arm64 }} == "false" && ${{ inputs.kernel_x64}} == "false" && ${{ inputs.kernel_x86 }} == "false" ]; then
+          if [ "${{ inputs.init_arm64 }}" == "false" && "${{ inputs.init_x64 }}" == "false" && "${{ inputs.init_x86 }}" == "false" && "${{ inputs.kernel_arm64 }}" == "false" && "${{ inputs.kernel_x64}}" == "false" && "${{ inputs.kernel_x86 }}" == "false" ]; then
             echo "No kernel or init selected."
             exit 1
           fi

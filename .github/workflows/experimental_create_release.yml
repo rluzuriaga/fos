@@ -46,7 +46,7 @@ jobs:
           kernel_x64="${{ inputs.kernel_x64 }}"
           kernel_x86="${{ inputs.kernel_x86 }}"
           if [[ "$init_arm64" == "false" && "$init_x64" == "false" && "$init_x86" == "false" && "$kernel_arm64" == "false" && "$kernel_x64" == "false" && "$kernel_x86" == "false" ]]; then
-            echo "No kernel or init selected."
+            echo "No kernels or inits selected to build."
             exit 1
           fi
 
@@ -299,10 +299,10 @@ jobs:
       - name: Create release body
         run: |
           body_text=""
-          if [ ${{ inputs.kernel_arm64 }} != "" || ${{ inputs.kernel_x64 }} != "" || ${{ inputs.kernel_x86 }} != "" ]; then
+          if [[ "${{ inputs.kernel_arm64 }}" == "true" || "${{ inputs.kernel_x64 }}" == "true" || "${{ inputs.kernel_x86 }}" == "true" ]]; then
             body_text+="Linux kernel ${{ env.LINUX_KERNEL_VER}}"
           fi
-          if [ ${{ inputs.init_arm64 }} != "" || ${{ inputs.init_x64 }} != "" || ${{ inputs.init_x86 }} != "" ]; then
+          if [[ "${{ inputs.init_arm64 }}" == "true" || "${{ inputs.init_x64 }}" == "true" || "${{ inputs.init_x86 }}" == "true" ]]; then
             body_text+="\nBuildroot ${{ env.BUILDROOT_VER}}"
           fi
 

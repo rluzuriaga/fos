@@ -286,15 +286,6 @@ jobs:
         run: |
           echo "BUILDROOT_VER=$(cat build.sh | sed -n -e 's/^.*BUILDROOT_VERSION=//p' | cut -d\' -f 2)" >> $GITHUB_ENV
 
-      # - name: Set release name and tag name variable if it is an Official FOG release
-      #   run: |
-      #     is_official="${{ inputs.is_official_release }}"
-      #     fog_version="${{ inputs.official_fog_version }}"
-      #     if [[ ${{ inputs.is_official_release }} == "true" ]]; then
-      #       echo "RELEASE_NAME=FOG $fog_version kernels and inits" >> $GITHUB_ENV
-      #       echo "TAG_NAME=$fog_version" >> $GITHUB_ENV
-      #     fi
-
       - name: Run sha256 checksum on all files
         run: |
           cd distribution-files
@@ -314,10 +305,11 @@ jobs:
           echo "RELEASE_BODY_TEXT=$(echo $body_text)" >> $GITHUB_ENV
 
       - name: Create release
-        uses: softprops/action-gh-release@v0.1.15
+        uses: softprops/action-gh-release@v1
         with:
           name: ${{ env.RELEASE_NAME }}
           body: ${{ env.RELEASE_BODY_TEXT }}
           tag_name: ${{ env.TAG_NAME }}
+          prerelease: true
           files: |
             distribution-files/*

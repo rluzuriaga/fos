@@ -300,7 +300,7 @@ jobs:
         run: |
           body_text=""
           if [[ "${{ inputs.kernel_arm64 }}" == "true" || "${{ inputs.kernel_x64 }}" == "true" || "${{ inputs.kernel_x86 }}" == "true" ]]; then
-            body_text+="Linux kernel ${{ env.LINUX_KERNEL_VER}}\ntest"
+            body_text+="Linux kernel ${{ env.LINUX_KERNEL_VER}}"
           fi
           if [[ "${{ inputs.init_arm64 }}" == "true" || "${{ inputs.init_x64 }}" == "true" || "${{ inputs.init_x86 }}" == "true" ]]; then
             body_text+="\nBuildroot ${{ env.BUILDROOT_VER}}"

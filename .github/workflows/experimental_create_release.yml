@@ -277,7 +277,7 @@ jobs:
       - name: Set release name variable
         run: |
           echo "RELEASE_NAME=Experimental release from $(date '+%Y-%m-%d')" >> $GITHUB_ENV
-          
+
       - name: Set tag name variable
         run: |
           echo "TAG_NAME=EXPERIMENTAL_$(date '+%Y%m%d')" >> $GITHUB_ENV
@@ -303,7 +303,7 @@ jobs:
             body_text+="Linux kernel ${{ env.LINUX_KERNEL_VER}}"
           fi
           if [[ "${{ inputs.init_arm64 }}" == "true" || "${{ inputs.init_x64 }}" == "true" || "${{ inputs.init_x86 }}" == "true" ]]; then
-            body_text+="\nBuildroot ${{ env.BUILDROOT_VER}}"
+            body_text="$body_text\nBuildroot ${{ env.BUILDROOT_VER}}"
           fi
 
           echo "RELEASE_BODY_TEXT=$(echo $body_text)" >> $GITHUB_ENV

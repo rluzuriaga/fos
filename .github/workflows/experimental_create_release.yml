@@ -300,13 +300,13 @@ jobs:
         run: |
           body_text=""
           if [[ "${{ inputs.kernel_arm64 }}" == "true" || "${{ inputs.kernel_x64 }}" == "true" || "${{ inputs.kernel_x86 }}" == "true" ]]; then
-            body_text+="Linux kernel ${{ env.LINUX_KERNEL_VER}}"
+            body_text+="Linux kernel ${{ env.LINUX_KERNEL_VER}}\ntest"
           fi
           if [[ "${{ inputs.init_arm64 }}" == "true" || "${{ inputs.init_x64 }}" == "true" || "${{ inputs.init_x86 }}" == "true" ]]; then
-            body_text="$body_text\nBuildroot ${{ env.BUILDROOT_VER}}"
+            body_text+="\nBuildroot ${{ env.BUILDROOT_VER}}"
           fi
 
-          echo "RELEASE_BODY_TEXT=$(echo $body_text)" >> $GITHUB_ENV
+          echo -e "RELEASE_BODY_TEXT=$(echo $body_text)" >> $GITHUB_ENV
 
       - name: Create release
         uses: softprops/action-gh-release@v1

@@ -298,15 +298,21 @@ jobs:
       
       - name: Create release body
         run: |
-          body_text=""
+          release_body_text="WARNING! These are experimental releases, backup your previous kernels/inits before installing these.\n\n"
+          # If the release includes any kernels, then add the kernel version to the release body.
           if [[ "${{ inputs.kernel_arm64 }}" == "true" || "${{ inputs.kernel_x64 }}" == "true" || "${{ inputs.kernel_x86 }}" == "true" ]]; then
-            body_text+="Linux kernel ${{ env.LINUX_KERNEL_VER}}"
+            release_body_text+="Linux kernel ${{ env.LINUX_KERNEL_VER}}\n"
           fi
+          # If the release includes any inits, then add the buildroot version to the release body.
           if [[ "${{ inputs.init_arm64 }}" == "true" || "${{ inputs.init_x64 }}" == "true" || "${{ inputs.init_x86 }}" == "true" ]]; then
-            body_text+="\nBuildroot ${{ env.BUILDROOT_VER}}"
+            release_body_text+="Buildroot ${{ env.BUILDROOT_VER}}"
           fi
-
-          echo -e "RELEASE_BODY_TEXT=$(echo $body_text)" >> $GITHUB_ENV
+          # GH Actions way of making a multiline text environment variable
+          {
+            echo 'RELEASE_BODY_TEXT<<EOF'
+            echo -e $release_body_text
+            echo EOF
+          } >> "$GITHUB_ENV"
 
       - name: Create release
         uses: softprops/action-gh-release@v1

@@ -3,15 +3,15 @@ name: Add USB Image to Release
 on:
   release:
     types:
-      - published
+      - released
 
 jobs:
   add-usb-image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Create USB Image
         run: |

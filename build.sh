@@ -1,7 +1,7 @@
 #!/bin/bash
 
-[[ -z $KERNEL_VERSION ]] && KERNEL_VERSION='6.1.89'
-[[ -z $BUILDROOT_VERSION ]] && BUILDROOT_VERSION='2024.02.1'
+[[ -z $KERNEL_VERSION ]] && KERNEL_VERSION='6.1.93'
+[[ -z $BUILDROOT_VERSION ]] && BUILDROOT_VERSION='2024.02.3'
 
 Usage() {
     echo -e "Usage: $0 [-knfvh?] [-a x64]"
@@ -114,8 +114,8 @@ while getopts "$optspec" o; do
             ;;
     esac
 done
-debDeps="tar xz-utils git meld build-essential bc rsync libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev file cpio"
-rhelDeps="epel-release tar xz git meld gcc gcc-c++ kernel-devel make bc rsync ncurses-devel bison flex gcc-aarch64-linux-gnu elfutils-libelf-devel file cpio perl-English perl-ExtUtils-MakeMaker perl-Thread-Queue perl-FindBin perl-IPC-Cmd"
+debDeps="tar xz-utils git meld build-essential bc rsync libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev file cpio attr"
+rhelDeps="epel-release tar xz git meld gcc gcc-c++ kernel-devel make bc rsync ncurses-devel bison flex gcc-aarch64-linux-gnu elfutils-libelf-devel file cpio perl-English perl-ExtUtils-MakeMaker perl-Thread-Queue perl-FindBin perl-IPC-Cmd attr"
 [[ -z $arch ]] && arch="x64 x86 arm64"
 [[ -z $buildPath ]] && buildPath=$(dirname $(readlink -f $0))
 [[ -z $confirm ]] && confirm="y"
@@ -288,6 +288,8 @@ function buildFilesystem() {
             ;;
     esac
     [[ ! -f $compiledfile ]] && echo 'File not found.' || cp $compiledfile $initfile && sha256sum $initfile > ${initfile}.sha256
+    setfattr -n user.version -v $(date +%Y%m%d) $initfile
+    setfattr -n user.buildroot -v $BUILDROOT_VERSION $initfile
     cd ..
 }
 

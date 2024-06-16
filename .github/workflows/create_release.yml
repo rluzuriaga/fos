@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev attr -y
 
       - name: Build arm64 kernel
         run: ./build.sh -nka arm64
@@ -73,7 +73,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev attr -y
 
       - name: Build x86 kernel
         run: ./build.sh -nka x86
@@ -101,7 +101,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev attr -y
 
       - name: Build x64 kernel
         run: ./build.sh -nka x64
@@ -129,7 +129,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev attr -y
 
       - name: Build arm64 initrd
         run: ./build.sh -nfa arm64
@@ -164,7 +164,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev attr -y
 
       - name: Build x86 initrd
         run: ./build.sh -nfa x86
@@ -199,7 +199,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev -y
+        run: sudo apt update && sudo apt install meld build-essential libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev attr -y
 
       - name: Build x64 initrd
         run: ./build.sh -nfa x64

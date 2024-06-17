@@ -13,6 +13,38 @@ Usage() {
     echo -e "\t\t-h --help -? Display this message."
 }
 [[ -n $arch ]] && unset $arch
+
+
+
+shortopts="?hkfna:p:"
+longopts="help,kernel-only,filesystem-only,noconfirm,arch:,path:"
+
+optargs=$(getopt -o $shortopts -l $longopts -n "$0" -- "$@")
+eval set -- "$optargs"
+
+while :; do
+    case $1 in
+        -\? | -h | --help)
+            Usage
+            exit 0
+            ;;
+        -k | --kernel-only)
+            buildKernelOnly="y"
+            ;;
+        -f | --filesystem-only)
+            buildFSOnly="y"
+            ;;
+        -n | --noconfirm)
+            confirm="n"
+            ;;
+        -a | --arch)
+            hasa=1
+            arch=$2
+            shift 2
+            ;;
+    esac
+done
+
 optspec="?hknfh-:a:v:p:"
 while getopts "$optspec" o; do
     case "${o}" in

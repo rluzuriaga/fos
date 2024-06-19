@@ -38,9 +38,24 @@ while :; do
             confirm="n"
             ;;
         -a | --arch)
+            if [ -z "$2" ]; then
+                echo "Error: Option -a|--arch requires an argument."
+                exit 1
+            fi
             hasa=1
             arch=$2
+            if [[ "$arch" != "x64" && "$arch" != "x86" && "$arch" != "arm64" ]]; then
+                echo "Error: Invalid architecture specified. Valid options are: x64, x86, arm64"
+                exit 1
+            fi
             shift 2
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            break
             ;;
     esac
 done
@@ -146,6 +161,8 @@ while getopts "$optspec" o; do
             ;;
     esac
 done
+
+
 debDeps="tar xz-utils git meld build-essential bc rsync libncurses5-dev bison flex gcc-aarch64-linux-gnu libelf-dev file cpio"
 rhelDeps="epel-release tar xz git meld gcc gcc-c++ kernel-devel make bc rsync ncurses-devel bison flex gcc-aarch64-linux-gnu elfutils-libelf-devel file cpio perl-English perl-ExtUtils-MakeMaker perl-Thread-Queue perl-FindBin perl-IPC-Cmd"
 [[ -z $arch ]] && arch="x64 x86 arm64"

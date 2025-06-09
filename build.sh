@@ -383,8 +383,9 @@ function buildKernel() {
     cd ..
 }
 
-dots() {
-    local pad=$(printf "%0.1s" "."{1..60})
+function dots() {
+    local pad
+    pad=$(printf "%0.1s" "."{1..60})
     printf " * %s%*.*s" "$1" 0 $((60-${#1})) "$pad"
     return 0
 }

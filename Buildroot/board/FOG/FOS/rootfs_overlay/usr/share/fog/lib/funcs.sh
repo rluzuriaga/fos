@@ -1501,20 +1501,19 @@ resolve_path() {
 getHardDisk() {
     hd=""
     disks=""
-    # Get valid devices (filter out 0B disks) once
+
+    # Get valid devices (filter out 0B disks) once, sort lexicographically for stable name order
     local devs
-    devs=$(lsblk -dpno KNAME,SIZE -I 3,8,9,179,202,253,259 | awk '$2 != "0B" { print $1 }' | sort -uV)
+    devs=$(lsblk -dpno KNAME,SIZE -I 3,8,9,179,202,253,259 | awk '$2 != "0B" { print $1 }' | sort -u)
 
     if [[ -n $fdrive ]]; then
         local found_match=0
         for spec in ${fdrive//,/ }; do
-            local spec_resolved
+            local spec_resolved spec_norm spec_normalized matched
             spec_resolved=$(resolve_path "$spec")
-            local spec_norm
             spec_norm=$(normalize "$spec_resolved")
-            local matched=0
-            local spec_normalized
             spec_normalized=$(normalize "$spec")
+            matched=0
 
             for dev in $devs; do
                 local size uuid serial wwn
@@ -1526,14 +1525,17 @@ getHardDisk() {
                     echo "Comparing spec='$spec' (resolved: '$spec_resolved') with dev=$dev"
                     echo "  size=$size serial=$serial wwn=$wwn uuid=$uuid"
                 }
-                if [[ "x$spec_resolved" == "x$dev" || "x$spec_normalized" == "x$size" ||
-                      "x$spec_normalized" == "x$wwn" || "x$spec_normalized" == "x$serial" ||
+                if [[ "x$spec_resolved" == "x$dev" || \
+                      "x$spec_normalized" == "x$size" || \
+                      "x$spec_normalized" == "x$wwn" || \
+                      "x$spec_normalized" == "x$serial" || \
                       "x$spec_normalized" == "x$uuid" ]]; then
                     [[ -n $isdebug ]] && echo "Matched spec '$spec' to device '$dev' (size=$size, serial=$serial, wwn=$wwn, uuid=$uuid)"
                     matched=1
                     found_match=1
                     disks="$disks $dev"
-                    devs=${devs// $dev/}   # remove matched dev
+                    # remove matched dev from the pool
+                    devs=${devs// $dev/}
                     break
                 fi
             done
@@ -1546,10 +1548,15 @@ getHardDisk() {
         disks=$(echo "$disks $devs" | xargs)   # add unmatched devices for completeness
 
     elif [[ -r ${imagePath}/d1.size && -r ${imagePath}/d2.size ]]; then
+        # Multi-disk image: keep stable name order
         disks="$devs"
     else
         # Auto-select largest available drive
-        hd=$(for d in $devs; do echo "$(blockdev --getsize64 "$d") $d"; done | sort -n | tail -1 | cut -d' ' -f2)
+        hd=$(
+            for d in $devs; do
+                echo "$(blockdev --getsize64 "$d") $d"
+            done | sort -k1,1nr -k2,2 | head -1 | cut -d' ' -f2
+        )
         [[ -z $hd ]] && handleError "Could not determine a suitable disk automatically."
         disks="$hd"
     fi

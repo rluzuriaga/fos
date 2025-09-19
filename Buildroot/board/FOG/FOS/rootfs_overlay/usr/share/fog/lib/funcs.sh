@@ -1551,12 +1551,19 @@ getHardDisk() {
         # Multi-disk image: keep stable name order
         disks="$devs"
     else
-        # Auto-select largest available drive
-        hd=$(
+        if [[ -n $largesize ]]; then
+            # Auto-select largest available drive
+            hd=$(
+                for d in $devs; do
+                    echo "$(blockdev --getsize64 "$d") $d"
+                done | sort -k1,1nr -k2,2 | head -1 | cut -d' ' -f2
+            )
+        else
             for d in $devs; do
-                echo "$(blockdev --getsize64 "$d") $d"
-            done | sort -k1,1nr -k2,2 | head -1 | cut -d' ' -f2
-        )
+                hd="$d"
+                break
+            done
+        fi
         [[ -z $hd ]] && handleError "Could not determine a suitable disk automatically."
         disks="$hd"
     fi

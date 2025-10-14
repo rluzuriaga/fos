@@ -1504,7 +1504,7 @@ getHardDisk() {
 
     # Get valid devices (filter out 0B disks) once, sort lexicographically for stable name order
     local devs
-    devs=$(lsblk -dpno KNAME,SIZE -I 3,8,9,179,202,253,259 | awk '$2 != "0B" { print $1 }' | sort -u)
+    devs=$(lsblk -dpno KNAME,SIZE -I 3,8,9,179,202,253,259 | awk '$2 != "0B" && !seen[$1]++ { print $1 }')
 
     if [[ -n $fdrive ]]; then
         local found_match=0

@@ -69,7 +69,7 @@ jobs:
             buildroot-dl-${{ runner.os }}-
 
       - name: Download all FS packages
-        run: ./build.sh --fs-download-only
+        run: ./build.sh -i --fs-download-only
 
   build_kernel_arm64:
     needs: input_checks

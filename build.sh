@@ -18,13 +18,14 @@ Usage() {
     echo -e "\t\t-p --path (optional) Specify a path to download and build the sources."
     echo -e "\t\t-n --noconfirm (optional) Build systems without confirmation."
     echo -e "\t\t-i --install-dep (optional) Attempt to install dependencies."
+    echo -e "\t\t--fs-download-only (optional) Download all packages needed for filesystem builds."
     echo -e "\t\t-h --help -? Display this message."
     exit 0
 }
 [[ -n "$arch" ]] && unset "$arch"
 
 shortopts="?hkfnia:p:"
-longopts="help,kernel-only,filesystem-only,noconfirm,install-dep,arch:,path:"
+longopts="help,kernel-only,filesystem-only,noconfirm,install-dep,fs-download-only,arch:,path:"
 
 optargs=$(getopt -o "$shortopts" -l "$longopts" -n "$0" -- "$@")
 [[ $? -ne 0 ]] && Usage
@@ -50,6 +51,12 @@ while :; do
             ;;
         -i | --install-dep)
             installDep="y"
+            shift
+            ;;
+        --fs-download-only)
+            fsDownload="y"
+            buildFSOnly="y"
+            confirm="n"
             shift
             ;;
         -a | --arch)
@@ -184,23 +191,30 @@ function buildFilesystem() {
             return
         fi
     fi
+    if [[ $fsDownload == "y" ]]; then
+        make source
+        cd ..
+        echo ""
+        echo "$arch filesystem packages downloaded. Exiting."
+        return 0
+    fi
     bash -c "while true; do echo \$(date) - building ...; sleep 30s; done" &
     PING_LOOP_PID=$!
     case "${arch}" in
         x64)
-            make -j "$(nproc)" > "buildroot$arch.log" 2>&1
+            make > "buildroot$arch.log" 2>&1
             status=$?
             ;;
         x86)
-            make -j "$(nproc)" ARCH=i486 > "buildroot$arch.log" 2>&1
+            make ARCH=i486 > "buildroot$arch.log" 2>&1
             status=$?
             ;;
         arm64)
-            make -j "$(nproc)" ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- > "buildroot$arch.log" 2>&1
+            make ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- > "buildroot$arch.log" 2>&1
             status=$?
             ;;
         *)
-            make -j "$(nproc)" > "buildroot$arch.log" 2>&1
+            make > "buildroot$arch.log" 2>&1
             status=$?
             ;;
     esac

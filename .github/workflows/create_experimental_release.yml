@@ -61,12 +61,12 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Ensure Buildroot DL dir exists
-        run: mkdir -p ${{ github.workspace }}/../buildroot-dl
+        run: mkdir -p ~/.buildroot-dl
         
       - name: Restore Buildroot DL cache
         uses: actions/cache@v4
         with:
-          path: ${{ github.workspace }}/../buildroot-dl
+          path: ~/.buildroot-dl
           key: buildroot-dl-${{ runner.os }}-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             buildroot-dl-${{ runner.os }}-
@@ -163,12 +163,12 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Ensure Buildroot DL dir exists
-        run: mkdir -p ${{ github.workspace }}/../buildroot-dl
+        run: mkdir -p ~/.buildroot-dl
         
       - name: Restore Buildroot DL cache
         uses: actions/cache@v4
         with:
-          path: ${{ github.workspace }}/../buildroot-dl
+          path: ~/.buildroot-dl
           key: buildroot-dl-${{ runner.os }}-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             buildroot-dl-${{ runner.os }}-
@@ -208,12 +208,12 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Ensure Buildroot DL dir exists
-        run: mkdir -p ${{ github.workspace }}/../buildroot-dl
+        run: mkdir -p ~/.buildroot-dl
         
       - name: Restore Buildroot DL cache
         uses: actions/cache@v4
         with:
-          path: ${{ github.workspace }}/../buildroot-dl
+          path: ~/.buildroot-dl
           key: buildroot-dl-${{ runner.os }}-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             buildroot-dl-${{ runner.os }}-
@@ -253,12 +253,12 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Ensure Buildroot DL dir exists
-        run: mkdir -p ${{ github.workspace }}/../buildroot-dl
+        run: mkdir -p ~/.buildroot-dl
         
       - name: Restore Buildroot DL cache
         uses: actions/cache@v4
         with:
-          path: ${{ github.workspace }}/../buildroot-dl
+          path: ~/.buildroot-dl
           key: buildroot-dl-${{ runner.os }}-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             buildroot-dl-${{ runner.os }}-

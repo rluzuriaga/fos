@@ -67,9 +67,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-dl
-          key: buildroot-dl-${{ runner.os }}-${{ hashFiles('**/build.sh') }}
+          key: buildroot-dl
           restore-keys: |
-            buildroot-dl-${{ runner.os }}-
+            buildroot-dl
 
       - name: Download all FS packages
         run: ./build.sh -i --fs-download-only
@@ -162,16 +162,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Ensure Buildroot DL dir exists
-        run: mkdir -p ~/.buildroot-dl
+      - name: Ensure Buildroot DL and Buildroot CCache dirs exist
+        run: |
+          mkdir -p ~/.buildroot-dl
+          mkdir -p ~/.buildroot-ccache
         
       - name: Restore Buildroot DL cache
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-dl
-          key: buildroot-dl-${{ runner.os }}-${{ hashFiles('**/build.sh') }}
+          key: buildroot-dl
           restore-keys: |
-            buildroot-dl-${{ runner.os }}-
+            buildroot-dl
+
+      - name: Restore Buildroot CCache
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildroot-ccache
+          key: buildroot-ccache
+          restore-keys: |
+            buildroot-ccache
 
       - name: Build arm64 initrd
         run: ./build.sh --install-dep -nfa arm64
@@ -207,16 +217,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Ensure Buildroot DL dir exists
-        run: mkdir -p ~/.buildroot-dl
+      - name: Ensure Buildroot DL and Buildroot CCache dirs exist
+        run: |
+          mkdir -p ~/.buildroot-dl
+          mkdir -p ~/.buildroot-ccache
         
       - name: Restore Buildroot DL cache
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-dl
-          key: buildroot-dl-${{ runner.os }}-${{ hashFiles('**/build.sh') }}
+          key: buildroot-dl
           restore-keys: |
-            buildroot-dl-${{ runner.os }}-
+            buildroot-dl
+
+      - name: Restore Buildroot CCache
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildroot-ccache
+          key: buildroot-ccache
+          restore-keys: |
+            buildroot-ccache
 
       - name: Build x86 initrd
         run: ./build.sh --install-dep -nfa x86
@@ -252,16 +272,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Ensure Buildroot DL dir exists
-        run: mkdir -p ~/.buildroot-dl
+      - name: Ensure Buildroot DL and Buildroot CCache dirs exist
+        run: |
+          mkdir -p ~/.buildroot-dl
+          mkdir -p ~/.buildroot-ccache
         
       - name: Restore Buildroot DL cache
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-dl
-          key: buildroot-dl-${{ runner.os }}-${{ hashFiles('**/build.sh') }}
+          key: buildroot-dl
           restore-keys: |
-            buildroot-dl-${{ runner.os }}-
+            buildroot-dl
+
+      - name: Restore Buildroot CCache
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildroot-ccache
+          key: buildroot-ccache
+          restore-keys: |
+            buildroot-ccache
 
       - name: Build x64 initrd
         run: ./build.sh --install-dep -nfa x64

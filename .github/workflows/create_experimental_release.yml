@@ -178,10 +178,10 @@ jobs:
       - name: Restore Buildroot CCache
         uses: actions/cache@v4
         with:
-          path: ~/.buildroot-ccache
-          key: buildroot-ccache
+          path: ~/.buildroot-ccache-arm64
+          key: buildroot-ccache-arm64
           restore-keys: |
-            buildroot-ccache
+            buildroot-ccache-arm64
 
       - name: Build arm64 initrd
         run: ./build.sh --install-dep -nfa arm64
@@ -233,10 +233,10 @@ jobs:
       - name: Restore Buildroot CCache
         uses: actions/cache@v4
         with:
-          path: ~/.buildroot-ccache
-          key: buildroot-ccache
+          path: ~/.buildroot-ccache-x86
+          key: buildroot-ccache-x86
           restore-keys: |
-            buildroot-ccache
+            buildroot-ccache-x86
 
       - name: Build x86 initrd
         run: ./build.sh --install-dep -nfa x86
@@ -288,10 +288,10 @@ jobs:
       - name: Restore Buildroot CCache
         uses: actions/cache@v4
         with:
-          path: ~/.buildroot-ccache
-          key: buildroot-ccache
+          path: ~/.buildroot-ccache-x64
+          key: buildroot-ccache-x64
           restore-keys: |
-            buildroot-ccache
+            buildroot-ccache-x64
 
       - name: Build x64 initrd
         run: ./build.sh --install-dep -nfa x64

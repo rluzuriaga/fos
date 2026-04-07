@@ -150,9 +150,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-ccache-arm64
-          key: buildroot-ccache-arm64-${​{ github.run_id }}
+          key: buildroot-ccache-arm64
           restore-keys: |
-            buildroot-ccache-arm64-
+            buildroot-ccache-arm64
 
       - name: Build arm64 initrd
         run: ./build.sh --install-dep -nfa arm64
@@ -200,9 +200,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-ccache-x86
-          key: buildroot-ccache-x86-${​{ github.run_id }}
+          key: buildroot-ccache-x86
           restore-keys: |
-            buildroot-ccache-x86-
+            buildroot-ccache-x86
 
       - name: Build x86 initrd
         run: ./build.sh --install-dep -nfa x86
@@ -250,9 +250,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-ccache-x64
-          key: buildroot-ccache-x64-${​{ github.run_id }}
+          key: buildroot-ccache-x64
           restore-keys: |
-            buildroot-ccache-x64-
+            buildroot-ccache-x64
 
       - name: Build x64 initrd
         run: ./build.sh --install-dep -nfa x64

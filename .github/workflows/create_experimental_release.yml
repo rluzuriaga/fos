@@ -129,7 +129,7 @@ jobs:
           retention-days: 1
 
   build_initrd_arm64:
-    needs: [input_checks, download_filesystem_packages]
+    needs: input_checks
 
     if: ${{ inputs.init_arm64 }}
     runs-on: ubuntu-22.04
@@ -179,7 +179,7 @@ jobs:
           retention-days: 30
 
   build_initrd_x86:
-    needs: [input_checks, download_filesystem_packages]
+    needs: input_checks
 
     if: ${{ inputs.init_x86 }}
     runs-on: ubuntu-22.04
@@ -229,7 +229,7 @@ jobs:
           retention-days: 30
 
   build_initrd_x64:
-    needs: [input_checks, download_filesystem_packages]
+    needs: input_checks
 
     if: ${{ inputs.init_x64 }}
     runs-on: ubuntu-22.04

@@ -24,6 +24,9 @@ declare -ar common_dependencies=(
     "unzip"
     "bzip2"
     "findutils"
+    "autoconf"
+    "libtool"
+    "autopoint"
 )
 
 declare -ar deb_dependencies=(

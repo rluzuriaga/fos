@@ -64,7 +64,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-dl
-          key: "buildroot-dl-${​{ github.run_id }}"
+          key: buildroot-dl-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             buildroot-dl-
 
@@ -163,7 +163,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-dl
-          key: buildroot-dl-${​{ github.run_id }}
+          key: buildroot-dl-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             buildroot-dl-
 
@@ -213,7 +213,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-dl
-          key: buildroot-dl-${​{ github.run_id }}
+          key: buildroot-dl-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             buildroot-dl-
 
@@ -263,7 +263,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-dl
-          key: buildroot-dl-${​{ github.run_id }}
+          key: buildroot-dl-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             buildroot-dl-
 

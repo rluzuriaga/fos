@@ -5,27 +5,27 @@ on:
     inputs:
       init_arm64:
         type: boolean
-        default: false
+        default: true
         description: "Create arm64 Init"
       init_x64:
         type: boolean
-        default: false
+        default: true
         description: "Create x64 Init"
       init_x86:
         type: boolean
-        default: false
+        default: true
         description: "Create x86 Init"
       kernel_arm64:
         type: boolean
-        default: false
+        default: true
         description: "Create arm64 kernel"
       kernel_x64:
         type: boolean
-        default: false
+        default: true
         description: "Create x64 kernel"
       kernel_x86:
         type: boolean
-        default: false
+        default: true
         description: "Create x86 kernel"
 
 defaults:
@@ -171,7 +171,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-ccache-arm64
-          key: ccache-arm64-${{ runner.os }}
+          key: ccache-arm64-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             ccache-arm64-
 
@@ -221,7 +221,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-ccache-x86
-          key: ccache-x86-${{ runner.os }}
+          key: ccache-x86-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             ccache-x86-
 
@@ -271,7 +271,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildroot-ccache-x64
-          key: ccache-x64-${{ runner.os }}
+          key: ccache-x64-${{ hashFiles('**/build.sh') }}
           restore-keys: |
             ccache-x64-
 

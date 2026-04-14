@@ -18,14 +18,15 @@ Usage() {
     echo -e "\t\t-p --path (optional) Specify a path to download and build the sources."
     echo -e "\t\t-n --noconfirm (optional) Build systems without confirmation."
     echo -e "\t\t-i --install-dep (optional) Attempt to install dependencies."
-    echo -e "\t\t--fs-download-only (optional) Download all packages needed for filesystem builds."
+    echo -e "\t\t--fs-download-only (optional) Only download Buildroot source packages for each filesystem."
+    echo -e "\t\t-v --verbose (optional) Show make output on screen as well as write it to the log file."
     echo -e "\t\t-h --help -? Display this message."
     exit 0
 }
 [[ -n "$arch" ]] && unset "$arch"
 
-shortopts="?hkfnia:p:"
-longopts="help,kernel-only,filesystem-only,noconfirm,install-dep,fs-download-only,arch:,path:"
+shortopts="?hkfnia:p:v"
+longopts="help,kernel-only,filesystem-only,noconfirm,install-dep,arch:,path:,fs-download-only,verbose"
 
 optargs=$(getopt -o "$shortopts" -l "$longopts" -n "$0" -- "$@")
 [[ $? -ne 0 ]] && Usage
@@ -54,9 +55,13 @@ while :; do
             shift
             ;;
         --fs-download-only)
-            fsDownload="y"
+            fsDownloadOnly="y"
             buildFSOnly="y"
             confirm="n"
+            shift
+            ;;
+        -v | --verbose)
+            verbose="y"
             shift
             ;;
         -a | --arch)
@@ -87,6 +92,8 @@ done
 [[ -z $buildPath ]] && buildPath="$(dirname "$(readlink -f "$0")")"
 [[ -z $confirm ]] && confirm="y"
 [[ -z $installDep ]] && installDep="n"
+[[ -z $verbose ]] && verbose="n"
+[[ -z $fsDownloadOnly ]] && fsDownloadOnly="n"
 
 checkDependencies
 installDependencies "$installDep"
@@ -150,6 +157,15 @@ function buildFilesystem() {
         esac
     fi
     echo "Done"
+
+    if [[ $fsDownloadOnly == "y" ]]; then
+        echo "Downloading Buildroot source packages for $arch ..."
+        make source
+        cd ..
+        echo "$arch filesystem packages downloaded. Exiting."
+        return 0
+    fi
+
     if [[ $confirm != n ]]; then
         read -rp "We are ready to build. Would you like to edit the config file [y|n]?" config
         if [[ $config == y ]]; then
@@ -191,34 +207,50 @@ function buildFilesystem() {
             return
         fi
     fi
-    if [[ $fsDownload == "y" ]]; then
-        make source
-        cd ..
-        echo ""
-        echo "$arch filesystem packages downloaded. Exiting."
-        return 0
+
+    if [[ $verbose == "y" ]]; then
+        case "${arch}" in
+            x64)
+                make | tee "buildroot$arch.log"
+                status=${PIPESTATUS[0]}
+                ;;
+            x86)
+                make ARCH=i486 | tee "buildroot$arch.log"
+                status=${PIPESTATUS[0]}
+                ;;
+            arm64)
+                make ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- | tee "buildroot$arch.log"
+                status=${PIPESTATUS[0]}
+                ;;
+            *)
+                make | tee "buildroot$arch.log"
+                status=${PIPESTATUS[0]}
+                ;;
+        esac
+    else
+        bash -c "while true; do echo \$(date) - building ...; sleep 30s; done" &
+        PING_LOOP_PID=$!
+        case "${arch}" in
+            x64)
+                make > "buildroot$arch.log" 2>&1
+                status=$?
+                ;;
+            x86)
+                make ARCH=i486 > "buildroot$arch.log" 2>&1
+                status=$?
+                ;;
+            arm64)
+                make ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- > "buildroot$arch.log" 2>&1
+                status=$?
+                ;;
+            *)
+                make > "buildroot$arch.log" 2>&1
+                status=$?
+                ;;
+        esac
+        kill $PING_LOOP_PID
     fi
-    bash -c "while true; do echo \$(date) - building ...; sleep 30s; done" &
-    PING_LOOP_PID=$!
-    case "${arch}" in
-        x64)
-            make > "buildroot$arch.log" 2>&1
-            status=$?
-            ;;
-        x86)
-            make ARCH=i486 > "buildroot$arch.log" 2>&1
-            status=$?
-            ;;
-        arm64)
-            make ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- > "buildroot$arch.log" 2>&1
-            status=$?
-            ;;
-        *)
-            make > "buildroot$arch.log" 2>&1
-            status=$?
-            ;;
-    esac
-    kill $PING_LOOP_PID
+
     [[ $status -gt 0 ]] && tail "buildroot$arch.log" && exit $status
     cd ..
     [[ ! -d dist ]] && mkdir dist

@@ -34,7 +34,7 @@ defaults:
 
 jobs:
   input_checks:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     
     steps:
       - name: Make sure at least one workflow input is selected
@@ -54,7 +54,7 @@ jobs:
     needs: input_checks
 
     if: ${{ inputs.init_arm64 || inputs.init_x64 || inputs.init_x86 }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -75,7 +75,7 @@ jobs:
     needs: input_checks
 
     if: ${{ inputs.kernel_arm64 }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -101,7 +101,7 @@ jobs:
     needs: input_checks
 
     if: ${{ inputs.kernel_x86 }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -127,7 +127,7 @@ jobs:
     needs: input_checks
 
     if: ${{ inputs.kernel_x64 }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -153,7 +153,7 @@ jobs:
     needs: [input_checks, download_filesystem_packages]
 
     if: ${{ inputs.init_arm64 }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -203,7 +203,7 @@ jobs:
     needs: [input_checks, download_filesystem_packages]
 
     if: ${{ inputs.init_x86 }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -253,7 +253,7 @@ jobs:
     needs: [input_checks, download_filesystem_packages]
 
     if: ${{ inputs.init_x64 }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -315,7 +315,7 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled')
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code

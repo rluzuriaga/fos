@@ -176,7 +176,7 @@ jobs:
             ccache-arm64-
 
       - name: Build arm64 initrd
-        run: ./build.sh --install-dep --verbose -nfa arm64
+        run: ./build.sh --install-dep -nfa arm64
 
       - name: Run sha256 checksum
         run: |
@@ -226,7 +226,7 @@ jobs:
             ccache-x86-
 
       - name: Build x86 initrd
-        run: ./build.sh --install-dep --verbose -nfa x86
+        run: ./build.sh --install-dep -nfa x86
 
       - name: Run sha256 checksum
         run: |
@@ -276,7 +276,7 @@ jobs:
             ccache-x64-
 
       - name: Build x64 initrd
-        run: ./build.sh --install-dep --verbose -nfa x64
+        run: ./build.sh --install-dep -nfa x64
 
       - name: Run sha256 checksum
         run: |

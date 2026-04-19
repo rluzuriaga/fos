@@ -79,7 +79,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@vv6.0.2
+        uses: actions/checkout@v6.0.2
 
       - name: Build arm64 kernel
         run: ./build.sh --install-dep -nka arm64

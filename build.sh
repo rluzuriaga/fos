@@ -211,19 +211,19 @@ function buildFilesystem() {
     if [[ $verbose == "y" ]]; then
         case "${arch}" in
             x64)
-                make | tee "buildroot$arch.log"
+                make -j "$(nproc)" | tee "buildroot$arch.log"
                 status=${PIPESTATUS[0]}
                 ;;
             x86)
-                make ARCH=i486 | tee "buildroot$arch.log"
+                make -j "$(nproc)" ARCH=i486 | tee "buildroot$arch.log"
                 status=${PIPESTATUS[0]}
                 ;;
             arm64)
-                make ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- | tee "buildroot$arch.log"
+                make -j "$(nproc)" ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- | tee "buildroot$arch.log"
                 status=${PIPESTATUS[0]}
                 ;;
             *)
-                make | tee "buildroot$arch.log"
+                make -j "$(nproc)" | tee "buildroot$arch.log"
                 status=${PIPESTATUS[0]}
                 ;;
         esac
@@ -232,19 +232,19 @@ function buildFilesystem() {
         PING_LOOP_PID=$!
         case "${arch}" in
             x64)
-                make > "buildroot$arch.log" 2>&1
+                make -j "$(nproc)" > "buildroot$arch.log" 2>&1
                 status=$?
                 ;;
             x86)
-                make ARCH=i486 > "buildroot$arch.log" 2>&1
+                make -j "$(nproc)" ARCH=i486 > "buildroot$arch.log" 2>&1
                 status=$?
                 ;;
             arm64)
-                make ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- > "buildroot$arch.log" 2>&1
+                make -j "$(nproc)" ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- > "buildroot$arch.log" 2>&1
                 status=$?
                 ;;
             *)
-                make > "buildroot$arch.log" 2>&1
+                make -j "$(nproc)" > "buildroot$arch.log" 2>&1
                 status=$?
                 ;;
         esac

@@ -5,27 +5,27 @@ on:
     inputs:
       init_arm64:
         type: boolean
-        default: false
+        default: true
         description: "Create arm64 Init"
       init_x64:
         type: boolean
-        default: false
+        default: true
         description: "Create x64 Init"
       init_x86:
         type: boolean
-        default: false
+        default: true
         description: "Create x86 Init"
       kernel_arm64:
         type: boolean
-        default: false
+        default: true
         description: "Create arm64 kernel"
       kernel_x64:
         type: boolean
-        default: false
+        default: true
         description: "Create x64 kernel"
       kernel_x86:
         type: boolean
-        default: false
+        default: true
         description: "Create x86 kernel"
 
 defaults:
@@ -35,7 +35,7 @@ defaults:
 jobs:
   input_checks:
     runs-on: ubuntu-24.04
-    
+
     steps:
       - name: Make sure at least one workflow input is selected
         run: |
@@ -280,7 +280,7 @@ jobs:
           cd distribution-files
           sha256sum -c ./*.sha256
           if [[ $? -ne 0 ]]; then exit 1; fi
-      
+
       - name: Create release body
         run: |
           release_body_text="WARNING! This is an experimental releases. Backup your previous kernels/inits before installing these.\n\n"

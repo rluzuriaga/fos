@@ -19,13 +19,14 @@ Usage() {
     echo -e "\t\t-n --noconfirm (optional) Build systems without confirmation."
     echo -e "\t\t-i --install-dep (optional) Attempt to install dependencies."
     echo -e "\t\t-v --verbose (optional) Show make output on screen for filesystem builds as well as write it to the log file."
+    echo -e "\t\t   --fs-download-only (optional) Only download Buildroot source packages for each filesystem."
     echo -e "\t\t-h --help -? Display this message."
     exit 0
 }
 [[ -n "$arch" ]] && unset "$arch"
 
 shortopts="?hkfnia:p:v"
-longopts="help,kernel-only,filesystem-only,noconfirm,install-dep,arch:,path:,verbose"
+longopts="help,kernel-only,filesystem-only,noconfirm,install-dep,arch:,path:,verbose,fs-download-only"
 
 optargs=$(getopt -o "$shortopts" -l "$longopts" -n "$0" -- "$@")
 [[ $? -ne 0 ]] && Usage
@@ -51,6 +52,12 @@ while :; do
             ;;
         -i | --install-dep)
             installDep="y"
+            shift
+            ;;
+        --fs-download-only)
+            fsDownloadOnly="y"
+            buildFSOnly="y"
+            confirm="n"
             shift
             ;;
         -v | --verbose)
@@ -86,6 +93,7 @@ done
 [[ -z $confirm ]] && confirm="y"
 [[ -z $installDep ]] && installDep="n"
 [[ -z $verbose ]] && verbose="n"
+[[ -z $fsDownloadOnly ]] && fsDownloadOnly="n"
 
 checkDependencies
 installDependencies "$installDep"
@@ -149,6 +157,15 @@ function buildFilesystem() {
         esac
     fi
     echo "Done"
+
+    if [[ $fsDownloadOnly == "y" ]]; then
+        echo "Downloading Buildroot source packages for $arch ..."
+        make source
+        cd ..
+        echo "$arch filesystem packages downloaded. Exiting."
+        return 0
+    fi
+
     if [[ $confirm != n ]]; then
         read -rp "We are ready to build. Would you like to edit the config file [y|n]?" config
         if [[ $config == y ]]; then
